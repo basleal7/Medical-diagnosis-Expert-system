@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medical Diagnosis System</title>
+
+<!-- LINK EXTERNAL CSS -->
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🩺 Medical Diagnosis System</h2>
+
+    <form id="form">
+        <div class="symptoms">
+            <label><input type="checkbox" value="fever"> Fever</label>
+            <label><input type="checkbox" value="cough"> Cough</label>
+            <label><input type="checkbox" value="headache"> Headache</label>
+            <label><input type="checkbox" value="sneezing"> Sneezing</label>
+            <label><input type="checkbox" value="runny_nose"> Runny Nose</label>
+            <label><input type="checkbox" value="chills"> Chills</label>
+            <label><input type="checkbox" value="sweating"> Sweating</label>
+            <label><input type="checkbox" value="abdominal_pain"> Abdominal Pain</label>
+            <label><input type="checkbox" value="weakness"> Weakness</label>
+            <label><input type="checkbox" value="joint_pain"> Joint Pain</label>
+            <label><input type="checkbox" value="rash"> Rash</label>
+        </div>
+
+        <button type="submit">🔍 Diagnose</button>
+    </form>
+
+    <div id="result" class="result"></div>
+</div>
+
+<script>
+document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '<span class="loading">Analyzing symptoms...</span>';
+
+    let symptoms = [];
+    document.querySelectorAll('input:checked').forEach(el => {
+        symptoms.push(el.value);
+    });
+
+    const res = await fetch('/diagnose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symptoms })
+    });
+
+    const data = await res.json();
+
+    resultDiv.innerHTML = `🧾 Diagnosis: <span class="highlight">${data.disease}</span>`;
+});
+</script>
+
+</body>
+</html>

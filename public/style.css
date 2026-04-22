@@ -1,0 +1,81 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    margin: 0;
+    padding: 0;
+}
+
+/* Main container */
+.container {
+    max-width: 500px;
+    margin: 60px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+/* Title */
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Symptom list */
+.symptoms {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.symptoms label {
+    display: block;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.symptoms label:hover {
+    background: #f0f8ff;
+}
+
+/* Checkbox spacing */
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Button */
+button {
+    background: #4facfe;
+    border: none;
+    padding: 12px 20px;
+    color: white;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #007bff;
+}
+
+/* Result text */
+.result {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Loading text */
+.loading {
+    color: #555;
+    font-style: italic;
+}
+
+/* Highlight diagnosis */
+.highlight {
+    color: #007bff;
+}
