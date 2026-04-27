@@ -12,35 +12,41 @@ app.post('/diagnose', (req, res) => {
         return res.json({ disease: "No symptoms selected" });
     }
 
-    // Build Prolog facts safely
     let facts = symptoms
         .map(s => `assertz(symptom(${s}))`)
         .join(',');
 
-    let command = `swipl -q -s prolog/medical.pl -g "clear,${facts},diagnose(D),write(D),halt."`;
+    // ✅ FIX: safer command (single quotes for Linux)
+    let command = `swipl -q -s prolog/medical.pl -g 'clear,${facts},diagnose(D),write(D),halt.'`;
 
-    console.log("Running:", command); // DEBUG
+    console.log("Running:", command);
 
     exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.error("Error:", error);
-            return res.json({ disease: "Error running Prolog" });
-        }
+        console.log("STDOUT:", stdout);
+        console.log("STDERR:", stderr);
 
-        console.log("STDOUT:", stdout); // DEBUG
-        console.log("STDERR:", stderr); // DEBUG
+        if (error) {
+            return res.json({
+                disease: "Error running Prolog",
+                debug: stderr
+            });
+        }
 
         const result = stdout.trim();
 
-        if (!result) {
-            return res.json({ disease: "unknown" });
-        }
-
-        res.json({ disease: result });
+        res.json({ disease: result || "unknown" });
     });
 });
-const PORT = 3000;
 
+app.get('/test-prolog', (req, res) => {
+    exec("swipl --version", (err, stdout, stderr) => {
+        if (err) return res.send(stderr);
+        res.send(stdout);
+    });
+});
+
+// ✅ IMPORTANT for Render
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
