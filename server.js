@@ -39,7 +39,9 @@ app.post('/diagnose', (req, res) => {
         res.json({ disease: result });
     });
 });
+const PORT = 3000;
 
-app.listen(3000, () => {
-    console.log("Server running at http://localhost:3000");
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
