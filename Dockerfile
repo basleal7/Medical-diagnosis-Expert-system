@@ -1,7 +1,9 @@
-FROM node:18
+FROM node:18-bullseye
 
-# Install Prolog
-RUN apt-get update && apt-get install -y swi-prolog
+# Install SWI-Prolog properly
+RUN apt-get update && \
+    apt-get install -y swi-prolog && \
+    apt-get clean
 
 WORKDIR /app
 

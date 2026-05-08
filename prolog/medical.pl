@@ -1,51 +1,80 @@
 :- dynamic symptom/1.
 
-clear :- retractall(symptom(_)).
+% Clear previous symptoms
+clear :-
+    retractall(symptom(_)).
 
-% Main diagnosis (Top 3 results, formatted)
-diagnose(FinalResults) :-
-    findall(P-D, disease_percentage(D, P), Raw),
-    sort(Raw, Sorted),              % ascending
-    reverse(Sorted, Desc),          % descending
-    take_top(Desc, 3, Top),         % take top 3 only
-    format_results(Top, FinalResults).
+% ==============================
+% Diagnosis Rules
+% ==============================
 
-% Disease definitions
-disease(flu, [fever, cough, headache]).
-disease(cold, [cough, sneezing, runny_nose]).
-disease(malaria, [fever, chills, sweating]).
-disease(typhoid, [fever, abdominal_pain, weakness]).
-disease(dengue, [fever, joint_pain, rash]).
+diagnose(flu) :-
+    symptom(fever),
+    symptom(cough),
+    symptom(headache).
 
-% Percentage calculation (rounded to integer)
-disease_percentage(Disease, PercentRounded) :-
-    disease(Disease, Symptoms),
-    count_matches(Symptoms, Match),
-    length(Symptoms, Total),
-    (Total > 0 ->
-        Percent is (Match / Total) * 100
-    ;
-        Percent is 0
-    ),
-    PercentRounded is round(Percent).
+diagnose(cold) :-
+    symptom(cough),
+    symptom(sneezing),
+    symptom(runny_nose).
 
-% Count matching symptoms
-count_matches(Symptoms, Count) :-
-    findall(S, (member(S, Symptoms), symptom(S)), Matches),
-    length(Matches, Count).
+diagnose(malaria) :-
+    symptom(fever),
+    symptom(chills),
+    symptom(sweating).
 
-% Take top N results
-take_top(_, 0, []) :- !.
-take_top([], _, []).
-take_top([H|T], N, [H|R]) :-
-    N1 is N - 1,
-    take_top(T, N1, R).
+diagnose(typhoid) :-
+    symptom(fever),
+    symptom(abdominal_pain),
+    symptom(weakness).
 
-% Format output as Disease-Percent (only >0)
-format_results([], []).
-format_results([P-D|T], [D-P|R]) :-
-    P > 0,
-    format_results(T, R).
-format_results([P-_|T], R) :-
-    P =:= 0,
-    format_results(T, R).
+diagnose(dengue) :-
+    symptom(fever),
+    symptom(joint_pain),
+    symptom(rash).
+
+diagnose(unknown).
+
+% ==============================
+% Treatment Rules
+% ==============================
+
+treatment(flu,
+"Rest, drink fluids, and take paracetamol.").
+
+treatment(cold,
+"Drink warm fluids and get enough rest.").
+
+treatment(malaria,
+"Take antimalarial medication and consult a doctor.").
+
+treatment(typhoid,
+"Use antibiotics prescribed by a doctor.").
+
+treatment(dengue,
+"Drink plenty of fluids and seek medical attention.").
+
+treatment(unknown,
+"Consult a healthcare professional.").
+
+% ==============================
+% Precaution Rules
+% ==============================
+
+precaution(flu,
+"Wash hands regularly and avoid close contact.").
+
+precaution(cold,
+"Keep warm and maintain hygiene.").
+
+precaution(malaria,
+"Use mosquito nets and avoid mosquito bites.").
+
+precaution(typhoid,
+"Drink clean water and eat hygienic food.").
+
+precaution(dengue,
+"Remove standing water and prevent mosquito bites.").
+
+precaution(unknown,
+"Maintain good hygiene and visit a doctor.").

@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Medical Diagnosis System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Diagnosis System</title>
 
-<!-- LINK EXTERNAL CSS -->
-<link rel="stylesheet" href="style.css">
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="container">
-    <h2>🩺 Medical Diagnosis System</h2>
+
+    <h1>🩺 Medical Diagnosis Expert System</h1>
 
     <form id="form">
+
         <div class="symptoms">
+
             <label><input type="checkbox" value="fever"> Fever</label>
             <label><input type="checkbox" value="cough"> Cough</label>
             <label><input type="checkbox" value="headache"> Headache</label>
@@ -27,36 +30,73 @@
             <label><input type="checkbox" value="weakness"> Weakness</label>
             <label><input type="checkbox" value="joint_pain"> Joint Pain</label>
             <label><input type="checkbox" value="rash"> Rash</label>
+
         </div>
 
         <button type="submit">🔍 Diagnose</button>
+
     </form>
 
     <div id="result" class="result"></div>
+
 </div>
 
 <script>
+
 document.getElementById('form').addEventListener('submit', async (e) => {
+
     e.preventDefault();
 
     const resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = '<span class="loading">Analyzing symptoms...</span>';
+
+    resultDiv.innerHTML = "Analyzing symptoms...";
 
     let symptoms = [];
+
     document.querySelectorAll('input:checked').forEach(el => {
         symptoms.push(el.value);
     });
 
-    const res = await fetch('/diagnose', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ symptoms })
-    });
+    try {
 
-    const data = await res.json();
+        const response = await fetch('/diagnose', {
 
-    resultDiv.innerHTML = `🧾 Diagnosis: <span class="highlight">${data.disease}</span>`;
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({ symptoms })
+
+        });
+
+        const data = await response.json();
+
+       resultDiv.innerHTML = `
+    <h2>🧾 Diagnosis: ${data.disease || "Unknown"}</h2>
+
+    <p>
+        <strong>💊 Treatment:</strong><br>
+        ${data.treatment || "No treatment available"}
+    </p>
+
+    <p>
+        <strong>⚠️ Precaution:</strong><br>
+        ${data.precaution || "No precaution available"}
+    </p>
+`;
+
+    } catch (error) {
+
+        resultDiv.innerHTML = `
+            <h2>Error</h2>
+            <p>Unable to connect to server.</p>
+        `;
+    }
+
 });
+
 </script>
 
 </body>
